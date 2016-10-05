@@ -1,6 +1,9 @@
 import socket
-
 from multiprocessing import Pool
+import time
+import argparse
+
+
 
 def scan(arg):
     target_ip, port = arg
@@ -16,12 +19,30 @@ def scan(arg):
     except (socket.timeout, socket.error):
         return port, False
 
+
+def showtest(arg):
+    target_ip, port = arg
+    time.sleep(port)
+    return port, True
+
+def main():
+    parser = argparse.ArgumentParser(description='script port scan dynamic DNS servers given a list of hostnames')
+
+    parser.add_argument('-v', '--verbose',
+        action="store_true",
+        help="verbose output" )
+
+    parser.add_argument('-f',
+        type=argparse.FileType('r'),
+        help="file containing hostnames")
+
+    args = parser.parse_args()
+
+    if args.f is not None:
+        print(args.f)
+        with open(args.f) as hostsfile:
+            print hostsfile.readline()
+
+
 if __name__ == '__main__':
-    target_ip = raw_input('Target IP: ')
-    num_procs = int(raw_input('Number of processes: '))
-
-    ports = range(1, 1025)
-    pool = Pool(processes=num_procs)
-
-    for port, status in pool.imap_unordered(scan, [(target_ip, port) for port in ports]):
-        print port, 'is', 'open' if status else 'closed'
+    main()
