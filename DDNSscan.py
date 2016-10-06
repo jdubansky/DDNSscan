@@ -4,6 +4,10 @@ import time
 import argparse
 
 
+def hosttoIP(arg):
+    target = arg
+    return (socket.gethostbyname(arg))
+
 
 def scan(arg):
     target_ip, port = arg
@@ -39,9 +43,12 @@ def main():
     args = parser.parse_args()
 
     if args.f is not None:
-        print(args.f)
-        with open(args.f) as hostsfile:
-            print hostsfile.readline()
+        with args.f as hostfile:
+            for line in hostfile:
+                print(line)
+                print(hosttoIP("yellow24.ddns.net"))
+
+
 
 
 if __name__ == '__main__':
